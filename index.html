@@ -83,6 +83,7 @@
     </figure>
 
     <script>
+      // Khởi tạo Era Widget
       const eraWidget = new EraWidget();
       let config = null;
       let TempValue = 0;
@@ -94,15 +95,16 @@
       });
 
       eraWidget.onValues((values) => {
-        TempValue = values[config.id].value;
-        HumidValue = values[config.id].value;
-        DustValue = values[config.id].value;
+        TempValue = values[config.id].temperature; // Giả định bạn có giá trị nhiệt độ
+        HumidValue = values[config.id].humidity; // Giả định bạn có giá trị độ ẩm
+        DustValue = values[config.id].dust_density; // Giả định bạn có giá trị mật độ bụi
       });
 
       eraWidget.ready();
 
       const dataBuffer = [];
 
+      // Tạo biểu đồ với dữ liệu ngẫu nhiên
       const chart = Highcharts.chart("container", {
         title: {
           text: "Trạm Dự Báo Thời Tiết",
@@ -132,22 +134,98 @@
             label: {
               connectorAllowed: false,
             },
-            pointStart: 1,
+            pointStart: new Date().getTime() - 60000 * 60, // Bắt đầu từ 1 giờ trước
+            pointInterval: 1000, // 1 giây
           },
         },
 
         series: [
           {
             name: "Nhiệt độ (°C)",
-            data: [],
+            data: (function () {
+              const data = [],
+                time = new Date().getTime();
+
+              for (let i = -59; i <= 0; i += 1) {
+                data.push([time + i * 1000, TempValue]);
+              }
+              return data;
+            })(),
+            fillColor: {
+              linearGradient: {
+                x1: 0,
+                x2: 0,
+                y1: 0,
+                y2: 1,
+              },
+              stops: [
+                [0, Highcharts.getOptions().colors[0]],
+                [
+                  1,
+                  Highcharts.color(Highcharts.getOptions().colors[0])
+                    .setOpacity(0)
+                    .get("rgba"),
+                ],
+              ],
+            },
           },
           {
             name: "Độ ẩm (%)",
-            data: [],
+            data: (function () {
+              const data = [],
+                time = new Date().getTime();
+
+              for (let i = -59; i <= 0; i += 1) {
+                data.push([time + i * 1000, HumidValue]);
+              }
+              return data;
+            })(),
+            fillColor: {
+              linearGradient: {
+                x1: 0,
+                x2: 0,
+                y1: 0,
+                y2: 1,
+              },
+              stops: [
+                [0, Highcharts.getOptions().colors[1]],
+                [
+                  1,
+                  Highcharts.color(Highcharts.getOptions().colors[1])
+                    .setOpacity(0)
+                    .get("rgba"),
+                ],
+              ],
+            },
           },
           {
             name: "Mật độ bụi (µg/m³)",
-            data: [],
+            data: (function () {
+              const data = [],
+                time = new Date().getTime();
+
+              for (let i = -59; i <= 0; i += 1) {
+                data.push([time + i * 1000, DustValue]);
+              }
+              return data;
+            })(),
+            fillColor: {
+              linearGradient: {
+                x1: 0,
+                x2: 0,
+                y1: 0,
+                y2: 1,
+              },
+              stops: [
+                [0, Highcharts.getOptions().colors[2]],
+                [
+                  1,
+                  Highcharts.color(Highcharts.getOptions().colors[2])
+                    .setOpacity(0)
+                    .get("rgba"),
+                ],
+              ],
+            },
           },
         ],
 
