@@ -94,9 +94,9 @@
       });
 
       eraWidget.onValues((values) => {
-        TempValue = values[config.id].temperature;
-        HumidValue = values[config.id].humidity;
-        DustValue = values[config.id].dust_density;
+        TempValue = values[config.id].value;
+        HumidValue = values[config.id].value;
+        DustValue = values[config.id].value;
       });
 
       eraWidget.ready();
