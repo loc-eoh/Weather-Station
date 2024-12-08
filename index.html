@@ -95,9 +95,9 @@
       });
 
       eraWidget.onValues((values) => {
-        TempValue = values[config.id].temperature; // Giả định bạn có giá trị nhiệt độ
-        HumidValue = values[config.id].humidity; // Giả định bạn có giá trị độ ẩm
-        DustValue = values[config.id].dust_density; // Giả định bạn có giá trị mật độ bụi
+        TempValue = values[config.id].value; // Giả định bạn có giá trị nhiệt độ
+        HumidValue = values[config.id].value; // Giả định bạn có giá trị độ ẩm
+        DustValue = values[config.id].value; // Giả định bạn có giá trị mật độ bụi
       });
 
       eraWidget.ready();
