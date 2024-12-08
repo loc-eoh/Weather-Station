@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trạm Dự Báo Thời Tiết</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://www.unpkg.com/@eohjsc/era-widget@1.0.14/src/index.js"></script>
+    <style>
+      .highcharts-figure,
+      .highcharts-data-table table {
+        min-width: 360px;
+        max-width: 800px;
+        margin: 1em auto;
+      }
+
+      #exportButton {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px auto;
+        font-size: 16px;
+        color: #fff;
+        background-color: #4caf50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #exportButton:hover {
+        background-color: #45a049;
+      }
+
+      .highcharts-data-table table {
+        font-family: Verdana, sans-serif;
+        border-collapse: collapse;
+        border: 1px solid #ebebeb;
+        margin: 10px auto;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .highcharts-data-table caption {
+        padding: 1em 0;
+        font-size: 1.2em;
+        color: #555;
+      }
+
+      .highcharts-data-table th {
+        font-weight: 600;
+        padding: 0.5em;
+      }
+
+      .highcharts-data-table td,
+      .highcharts-data-table th,
+      .highcharts-data-table caption {
+        padding: 0.5em;
+      }
+
+      .highcharts-data-table thead tr,
+      .highcharts-data-table tr:nth-child(even) {
+        background: #f8f8f8;
+      }
+
+      .highcharts-data-table tr:hover {
+        background: #f1f7ff;
+      }
+
+      .highcharts-description {
+        margin: 0.3rem 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="exportButton">Xuất sang Excel</button>
+    <figure class="highcharts-figure">
+      <div id="container"></div>
+    </figure>
+
+    <script>
+      const eraWidget = new EraWidget();
+      let config = null;
+      let TempValue = 0;
+      let HumidValue = 0;
+      let DustValue = 0;
+
+      eraWidget.onConfiguration((configuration) => {
+        config = configuration.realtime_configs[0];
+      });
+
+      eraWidget.onValues((values) => {
+        TempValue = values[config.id].temperature;
+        HumidValue = values[config.id].humidity;
+        DustValue = values[config.id].dust_density;
+      });
+
+      eraWidget.ready();
+
+      const dataBuffer = [];
+
+      const chart = Highcharts.chart("container", {
+        title: {
+          text: "Trạm Dự Báo Thời Tiết",
+          align: "middle",
+        },
+
+        yAxis: {
+          title: {
+            text: "Giá Trị",
+          },
+        },
+
+        xAxis: {
+          accessibility: {
+            rangeDescription: "Range: 1 to 60",
+          },
+        },
+
+        legend: {
+          layout: "vertical",
+          align: "right",
+          verticalAlign: "middle",
+        },
+
+        plotOptions: {
+          series: {
+            label: {
+              connectorAllowed: false,
+            },
+            pointStart: 1,
+          },
+        },
+
+        series: [
+          {
+            name: "Nhiệt độ (°C)",
+            data: [],
+          },
+          {
+            name: "Độ ẩm (%)",
+            data: [],
+          },
+          {
+            name: "Mật độ bụi (µg/m³)",
+            data: [],
+          },
+        ],
+
+        responsive: {
+          rules: [
+            {
+              condition: {
+                maxWidth: 500,
+              },
+              chartOptions: {
+                legend: {
+                  layout: "horizontal",
+                  align: "center",
+                  verticalAlign: "bottom",
+                },
+              },
+            },
+          ],
+        },
+      });
+
+      setInterval(function () {
+        const x = new Date().getTime();
+        chart.series[0].addPoint([x, TempValue], true, true);
+        chart.series[1].addPoint([x, HumidValue], true, true);
+        chart.series[2].addPoint([x, DustValue], true, true);
+
+        dataBuffer.push([x, TempValue, HumidValue, DustValue]);
+      }, 1000);
+
+      document
+        .getElementById("exportButton")
+        .addEventListener("click", function () {
+          const ws = XLSX.utils.json_to_sheet(
+            dataBuffer.map((point) => ({
+              Time: new Date(point[0]).toLocaleString(),
+              Temperature: point[1],
+              Humidity: point[2],
+              DustDensity: point[3],
+            }))
+          );
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Weather Data");
+          XLSX.writeFile(wb, "WeatherData.xlsx");
+        });
+    </script>
+  </body>
+</html>
