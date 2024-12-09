@@ -106,7 +106,7 @@
 
       const dataBuffer = [];
 
-      const chart = Highcharts.stockChart("container", {
+      const chart = Highcharts.chart("container", {
         title: {
           text: "Trạm Dự Báo Thời Tiết",
         },
@@ -119,7 +119,7 @@
 
         xAxis: {
           type: "datetime",
-          tickInterval: 1000, // Hiển thị mỗi giây
+          tickInterval: 1000,
           max: new Date().getTime(),
           title: {
             text: "Time",
