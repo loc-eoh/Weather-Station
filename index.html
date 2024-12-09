@@ -18,6 +18,23 @@
         margin: 1em auto;
       }
 
+      #exportButton {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px auto;
+        font-size: 16px;
+        color: #fff;
+        background-color: #4caf50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #exportButton:hover {
+        background-color: #45a049;
+      }
+
       .highcharts-data-table table {
         font-family: Verdana, sans-serif;
         border-collapse: collapse;
@@ -91,41 +108,36 @@
       const dataBuffer = [];
 
       const chart = Highcharts.chart("container", {
-        chart: {
-          type: "line",
-        },
         title: {
-          text: "Monthly Average Temperature",
+          text: "Trạm Dự Báo Thời Tiết",
         },
 
-        xAxis: {
-          title: {
-            text: "Time",
-          },
-          categories: [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-          ],
-        },
         yAxis: {
           title: {
             text: "Value",
           },
         },
+
+        xAxis: {
+          accessibility: {
+            rangeDescription: "Range: 1 to 60",
+          },
+        },
+
+        legend: {
+          layout: "vertical",
+          align: "right",
+          verticalAlign: "middle",
+        },
+
         plotOptions: {
           line: {
             dataLabels: {
               enabled: true,
             },
-            enableMouseTracking: false,
+            enableMouseTracking: true,
+            // pointStart: new Date().getTime() - 60000 * 60,
+            // // pointInterval: 1000,
           },
         },
 
@@ -219,7 +231,7 @@
           },
         ],
 
-        <!-- responsive: {
+        responsive: {
           rules: [
             {
               condition: {
@@ -234,7 +246,7 @@
               },
             },
           ],
-        }, -->
+        },
       });
 
       setInterval(function () {
@@ -252,9 +264,9 @@
           const ws = XLSX.utils.json_to_sheet(
             dataBuffer.map((point) => ({
               Time: new Date(point[0]).toLocaleString(),
-              TempValue: point[1],
-              HumidValue: point[2],
-              DustValue: point[3],
+              Temperature: point[1],
+              Humidity: point[2],
+              DustDensity: point[3],
             }))
           );
           const wb = XLSX.utils.book_new();
