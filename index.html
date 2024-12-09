@@ -119,9 +119,6 @@
         },
 
         xAxis: {
-          type: "datetime",
-          tickInterval: 1000, // Hiển thị mỗi giây
-          max: new Date().getTime(), // Giá trị tối đa cho trục x
           title: {
             text: "Time",
           },
@@ -262,12 +259,18 @@
       });
 
       setInterval(function () {
-        const x = new Date().getTime();
-        chart.series[0].addPoint([x, TempValue], true, true);
-        chart.series[1].addPoint([x, HumidValue], true, true);
-        chart.series[2].addPoint([x, DustValue], true, true);
+        const x = new Date();
+        const utc = x.getTime() + x.getTimezoneOffset() * 60000;
+        const vietnamTime = utc + 7 * 3600000;
 
-        dataBuffer.push([x, TempValue, HumidValue, DustValue]);
+        chart.series[0].addPoint([vietnamTime, TempValue], true, true);
+        chart.series[1].addPoint([vietnamTime, HumidValue], true, true);
+        chart.series[2].addPoint([vietnamTime, DustValue], true, true);
+
+        dataBuffer.push([vietnamTime, TempValue, HumidValue, DustValue]);
+        if (dataBuffer.length > 10) {
+          dataBuffer.shift();
+        }
       }, 1000);
 
       document
