@@ -264,9 +264,9 @@
           const ws = XLSX.utils.json_to_sheet(
             dataBuffer.map((point) => ({
               Time: new Date(point[0]).toLocaleString(),
-              Temperature: point[1],
-              Humidity: point[2],
-              DustDensity: point[3],
+              TempValue: point[1],
+              HumidValue: point[2],
+              DustValue: point[3],
             }))
           );
           const wb = XLSX.utils.book_new();
