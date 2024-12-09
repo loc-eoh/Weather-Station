@@ -119,8 +119,11 @@
         },
 
         xAxis: {
-          accessibility: {
-            rangeDescription: "Range: 1 to 60",
+          type: "datetime",
+          tickInterval: 1000, // Hiển thị mỗi giây
+          max: new Date().getTime(), // Giá trị tối đa cho trục x
+          title: {
+            text: "Time",
           },
         },
 
@@ -131,13 +134,22 @@
         },
 
         plotOptions: {
-          line: {
+          series: {
+            pointStart: Date.now() - 10000,
+            pointInterval: 1000,
+          },
+          area: {
+            stacking: "normal",
+            lineColor: "#666666",
+            lineWidth: 1,
+            enableMouseTracking: true,
             dataLabels: {
               enabled: true,
             },
-            enableMouseTracking: true,
-            // pointStart: new Date().getTime() - 60000 * 60,
-            // // pointInterval: 1000,
+            marker: {
+              lineWidth: 1,
+              lineColor: "#666666",
+            },
           },
         },
 
