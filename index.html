@@ -6,7 +6,6 @@
     <title>Trạm Dự Báo Thời Tiết</title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/series-label.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script src="https://www.unpkg.com/@eohjsc/era-widget@1.1.3/src/index.js"></script>
@@ -107,7 +106,7 @@
 
       const dataBuffer = [];
 
-      const chart = Highcharts.chart("container", {
+      const chart = Highcharts.stockChart("container", {
         title: {
           text: "Trạm Dự Báo Thời Tiết",
         },
@@ -281,9 +280,9 @@
           const ws = XLSX.utils.json_to_sheet(
             dataBuffer.map((point) => ({
               Time: new Date(point[0]).toLocaleString(),
-              Temperature: point[1],
-              Humidity: point[2],
-              DustDensity: point[3],
+              TempValue: point[1],
+              HumidValue: point[2],
+              DustValue: point[3],
             }))
           );
           const wb = XLSX.utils.book_new();
