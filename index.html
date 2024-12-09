@@ -35,10 +35,9 @@
     </style>
   </head>
   <body>
-    <button id="exportButton">Export to Excel</button>
+    <button id="exportButton">Xuất Excel</button>
     <div id="container"></div>
     <script>
-      // Era Widget initialization
       const eraWidget = new EraWidget();
       let configTemp = null;
       let configHumid = null;
@@ -91,27 +90,6 @@
 
         time: {
           useUTC: false,
-        },
-
-        rangeSelector: {
-          buttons: [
-            {
-              count: 1,
-              type: "minute",
-              text: "1M",
-            },
-            {
-              count: 5,
-              type: "minute",
-              text: "5M",
-            },
-            {
-              type: "all",
-              text: "All",
-            },
-          ],
-          inputEnabled: false,
-          selected: 0,
         },
 
         title: {
