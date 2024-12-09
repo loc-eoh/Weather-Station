@@ -119,6 +119,9 @@
         },
 
         xAxis: {
+          type: "datetime",
+          tickInterval: 1000, // Hiển thị mỗi giây
+          max: new Date().getTime(),
           title: {
             text: "Time",
           },
@@ -132,8 +135,7 @@
 
         plotOptions: {
           series: {
-            pointStart: Date.now() - 10000,
-            pointInterval: 1000,
+            pointStart: 0,
           },
           area: {
             stacking: "normal",
