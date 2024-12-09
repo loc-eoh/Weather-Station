@@ -111,20 +111,7 @@
           text: "Trạm Dự Báo Thời Tiết",
         },
 
-        yAxis: {
-          title: {
-            text: "Value",
-          },
-        },
-
-        xAxis: {
-          type: "datetime",
-          tickInterval: 1000,
-          max: new Date().getTime(),
-          title: {
-            text: "Time",
-          },
-        },
+        yAxis: {},
 
         legend: {
           layout: "vertical",
@@ -133,9 +120,6 @@
         },
 
         plotOptions: {
-          series: {
-            pointStart: 0,
-          },
           area: {
             stacking: "normal",
             lineColor: "#666666",
