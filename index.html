@@ -249,14 +249,14 @@
         },
       });
 
-      <!-- setInterval(function () {
+      setInterval(function () {
         const x = new Date().getTime();
         chart.series[0].addPoint([x, TempValue], true, true);
         chart.series[1].addPoint([x, HumidValue], true, true);
         chart.series[2].addPoint([x, DustValue], true, true);
 
         dataBuffer.push([x, TempValue, HumidValue, DustValue]);
-      }, 1000); -->
+      }, 1000);
 
       document
         .getElementById("exportButton")
