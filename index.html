@@ -83,34 +83,34 @@
     </figure>
 
     <script>
-      // Khởi tạo Era Widget
       const eraWidget = new EraWidget();
-      let config = null;
+      let configTemp = null;
+      let configHumid = null;
+      let configDust = null;
       let TempValue = 0;
       let HumidValue = 0;
       let DustValue = 0;
 
-      eraWidget.onConfiguration((configuration) => {
-        configTemp = configuration.realtime_configs[0];
-        configHumid = configuration.realtime_configs[1];
-        configDust = configuration.realtime_configs[2];
-      });
+      eraWidget.init({
+        onConfiguration: (configuration) => {
+          configTemp = configuration.realtime_configs[0];
+          configHumid = configuration.realtime_configs[1];
+          configDust = configuration.realtime_configs[2];
+        },
 
-      eraWidget.onValues((values) => {
-        TempValue = values[configTemp.id].value; // Giả định bạn có giá trị nhiệt độ
-        HumidValue = values[configHumid.id].value; // Giả định bạn có giá trị độ ẩm
-        DustValue = values[configDust.id].value; // Giả định bạn có giá trị mật độ bụi
+        onValues: (values) => {
+          TempValue = values[configTemp.id].value;
+          HumidValue = values[configHumid.id].value;
+          DustValue = values[configDust.id].value;
+        },
       });
-
-      eraWidget.ready();
 
       const dataBuffer = [];
 
-      // Tạo biểu đồ với dữ liệu ngẫu nhiên
       const chart = Highcharts.chart("container", {
         title: {
           text: "Trạm Dự Báo Thời Tiết",
-          align: "Left",
+          align: "left",
         },
 
         yAxis: {
@@ -120,8 +120,8 @@
         },
 
         xAxis: {
-          title: {
-            text: "Time",
+          accessibility: {
+            rangeDescription: "Range: 1 to 60",
           },
         },
 
