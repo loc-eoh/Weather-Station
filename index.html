@@ -18,23 +18,6 @@
         margin: 1em auto;
       }
 
-      #exportButton {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 10px auto;
-        font-size: 16px;
-        color: #fff;
-        background-color: #4caf50;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-
-      #exportButton:hover {
-        background-color: #45a049;
-      }
-
       .highcharts-data-table table {
         font-family: Verdana, sans-serif;
         border-collapse: collapse;
@@ -108,36 +91,41 @@
       const dataBuffer = [];
 
       const chart = Highcharts.chart("container", {
+        chart: {
+          type: "line",
+        },
         title: {
-          text: "Trạm Dự Báo Thời Tiết",
-          align: "left",
+          text: "Monthly Average Temperature",
         },
 
+        xAxis: {
+          title: {
+            text: "Time",
+          },
+          categories: [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+          ],
+        },
         yAxis: {
           title: {
             text: "Value",
           },
         },
-
-        xAxis: {
-          accessibility: {
-            rangeDescription: "Range: 1 to 60",
-          },
-        },
-
-        legend: {
-          layout: "vertical",
-          align: "right",
-          verticalAlign: "middle",
-        },
-
         plotOptions: {
-          series: {
-            label: {
-              connectorAllowed: false,
+          line: {
+            dataLabels: {
+              enabled: true,
             },
-            pointStart: new Date().getTime() - 60000 * 60, // Bắt đầu từ 1 giờ trước
-            pointInterval: 1000, // 1 giây
+            enableMouseTracking: false,
           },
         },
 
@@ -231,7 +219,7 @@
           },
         ],
 
-        responsive: {
+        <!-- responsive: {
           rules: [
             {
               condition: {
@@ -246,7 +234,7 @@
               },
             },
           ],
-        },
+        }, -->
       });
 
       setInterval(function () {
