@@ -40,15 +40,23 @@
     <script>
       // Era Widget initialization
       const eraWidget = new EraWidget();
-      let config = null;
-      let BreathValue = 0; // Khởi tạo giá trị nhịp thở mặc định
+      let configTemp = null;
+      let configHumid = null;
+      let configDust = null;
+      let TempValue = 0;
+      let HumidValue = 0;
+      let DustValue = 0;
 
       eraWidget.onConfiguration((configuration) => {
-        config = configuration.realtime_configs[0];
+        configTemp = configuration.realtime_configs[0];
+        configHumid = configuration.realtime_configs[1];
+        configDust = configuration.realtime_configs[2];
       });
 
       eraWidget.onValues((values) => {
-        BreathValue = values[config.id].value; // Lấy giá trị nhịp thở thực tế từ Era Widget
+        TempValue = values[configTemp.id].value;
+        HumidValue = values[configHumid.id].value;
+        DustValue = values[configDust.id].value;
       });
 
       eraWidget.ready();
@@ -57,15 +65,21 @@
 
       Highcharts.stockChart("container", {
         chart: {
-          backgroundColor: "#EBFAFF", // Đổi màu nền phía sau
+          backgroundColor: "#EBFAFF",
           events: {
             load: function () {
-              const series = this.series[0];
+              const seriesTemp = this.series[0];
+              const seriesHumid = this.series[1];
+              const seriesDust = this.series[2];
+
               setInterval(function () {
-                const x = new Date().getTime(),
-                  y = BreathValue;
-                series.addPoint([x, y], true, true);
-                dataBuffer.push([x, y]); // Lưu trữ dữ liệu vào mảng dataBuffer
+                const x = new Date().getTime();
+
+                seriesTemp.addPoint([x, TempValue], true, true);
+                seriesHumid.addPoint([x, HumidValue], true, true);
+                seriesDust.addPoint([x, DustValue], true, true);
+
+                dataBuffer.push([x, TempValue, HumidValue, DustValue]);
               }, 1000);
             },
           },
@@ -101,7 +115,7 @@
         },
 
         title: {
-          text: "Live Breath Data - Realtime Display",
+          text: "Live Weather Forecast Data - Realtime Display",
         },
 
         exporting: {
@@ -110,34 +124,40 @@
 
         series: [
           {
-            name: "Breath data",
+            name: "Nhiệt độ (°C)",
             data: (function () {
-              // generate an array of random data
               const data = [],
                 time = new Date().getTime();
 
-              for (let i = -999; i <= 0; i += 1) {
-                data.push([time + i * 1000, BreathValue]);
+              for (let i = -59; i <= 0; i += 1) {
+                data.push([time + i * 1000, TempValue]);
               }
               return data;
             })(),
-            fillColor: {
-              linearGradient: {
-                x1: 0,
-                x2: 0,
-                y1: 0,
-                y2: 1,
-              },
-              stops: [
-                [0, Highcharts.getOptions().colors[6]],
-                [
-                  1,
-                  Highcharts.color(Highcharts.getOptions().colors[6])
-                    .setOpacity(0)
-                    .get("rgba"),
-                ],
-              ],
-            },
+          },
+          {
+            name: "Độ ẩm (%)",
+            data: (function () {
+              const data = [],
+                time = new Date().getTime();
+
+              for (let i = -59; i <= 0; i += 1) {
+                data.push([time + i * 1000, HumidValue]);
+              }
+              return data;
+            })(),
+          },
+          {
+            name: "Mật độ bụi (µg/m³)",
+            data: (function () {
+              const data = [],
+                time = new Date().getTime();
+
+              for (let i = -59; i <= 0; i += 1) {
+                data.push([time + i * 1000, DustValue]);
+              }
+              return data;
+            })(),
           },
         ],
       });
@@ -148,12 +168,14 @@
           const ws = XLSX.utils.json_to_sheet(
             dataBuffer.map((point) => ({
               Time: new Date(point[0]).toLocaleString(),
-              BreathValue: point[1],
+              Temperature: point[1],
+              Humidity: point[2],
+              DustDensity: point[3],
             }))
           );
           const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "Breath");
-          XLSX.writeFile(wb, "BreathValue.xlsx");
+          XLSX.utils.book_append_sheet(wb, ws, "WeatherForecastData");
+          XLSX.writeFile(wb, "WeatherForecastData.xlsx");
         });
     </script>
   </body>
