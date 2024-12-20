@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Live Weather Forecast Data - Realtime Display</title>
+    <title>Live Heartbeat & Breathbeat Data - Realtime Display</title>
     <script src="https://code.highcharts.com/stock/highstock.js"></script>
     <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
@@ -35,7 +35,7 @@
     </style>
   </head>
   <body>
-    <button id="exportButton">Xuất Excel</button>
+    <button id="exportButton">Export Excel</button>
     <div id="container"></div>
     <script>
       const eraWidget = new EraWidget();
@@ -93,7 +93,7 @@
         },
 
         title: {
-          text: "Live Weather Forecast Data - Realtime Display",
+          text: "Live Heartbeat & Breathbeat Data - Realtime Display",
         },
         rangeSelector: {
           buttons: [
@@ -111,7 +111,7 @@
 
         series: [
           {
-            name: "Nhiệt độ (°C)",
+            name: "Nhịp tim (bpm)",
             data: (function () {
               const data = [],
                 time = new Date().getTime();
@@ -123,7 +123,7 @@
             })(),
           },
           {
-            name: "Độ ẩm (%)",
+            name: "Nhịp thở (bpm)",
             data: (function () {
               const data = [],
                 time = new Date().getTime();
@@ -161,8 +161,8 @@
             }))
           );
           const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "WeatherForecastData");
-          XLSX.writeFile(wb, "WeatherForecastData.xlsx");
+          XLSX.utils.book_append_sheet(wb, ws, "VitalData");
+          XLSX.writeFile(wb, "VitalData.xlsx");
         });
     </script>
   </body>
