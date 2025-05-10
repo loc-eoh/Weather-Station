@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Enviroment Data - Realtime Display</title>
+    <title>Live Weather Forecast Data - Realtime Display</title>
     <script src="https://code.highcharts.com/stock/highstock.js"></script>
     <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
@@ -35,7 +35,7 @@
     </style>
   </head>
   <body>
-    <button id="exportButton">Export Excel</button>
+    <button id="exportButton">Xuất Excel</button>
     <div id="container"></div>
     <script>
       const eraWidget = new EraWidget();
@@ -44,15 +44,18 @@
       let configDust = null;
       let TempValue = 0;
       let HumidValue = 0;
+      let DustValue = 0;
 
       eraWidget.onConfiguration((configuration) => {
         configTemp = configuration.realtime_configs[0];
         configHumid = configuration.realtime_configs[1];
+        configDust = configuration.realtime_configs[2];
       });
 
       eraWidget.onValues((values) => {
         TempValue = values[configTemp.id].value;
         HumidValue = values[configHumid.id].value;
+        DustValue = values[configDust.id].value;
       });
 
       eraWidget.ready();
@@ -66,14 +69,16 @@
             load: function () {
               const seriesTemp = this.series[0];
               const seriesHumid = this.series[1];
+              const seriesDust = this.series[2];
 
               setInterval(function () {
                 const x = new Date().getTime();
 
                 seriesTemp.addPoint([x, TempValue], true, true);
                 seriesHumid.addPoint([x, HumidValue], true, true);
+                seriesDust.addPoint([x, DustValue], true, true);
 
-                dataBuffer.push([x, TempValue, HumidValue]);
+                dataBuffer.push([x, TempValue, HumidValue, DustValue]);
               }, 1000);
             },
           },
@@ -88,7 +93,7 @@
         },
 
         title: {
-          text: "Enviroment Data - Realtime Display",
+          text: "Live Weather Forecast Data - Realtime Display",
         },
         rangeSelector: {
           buttons: [
@@ -106,7 +111,7 @@
 
         series: [
           {
-            name: "Nhiệt độ",
+            name: "Nhiệt độ (°C)",
             data: (function () {
               const data = [],
                 time = new Date().getTime();
@@ -118,13 +123,25 @@
             })(),
           },
           {
-            name: "Độ ẩm",
+            name: "Độ ẩm (%)",
             data: (function () {
               const data = [],
                 time = new Date().getTime();
 
               for (let i = -59; i <= 0; i += 1) {
                 data.push([time + i * 1000, HumidValue]);
+              }
+              return data;
+            })(),
+          },
+          {
+            name: "Mật độ bụi (µg/m³)",
+            data: (function () {
+              const data = [],
+                time = new Date().getTime();
+
+              for (let i = -59; i <= 0; i += 1) {
+                data.push([time + i * 1000, DustValue]);
               }
               return data;
             })(),
@@ -144,8 +161,8 @@
             }))
           );
           const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "EnviromentData");
-          XLSX.writeFile(wb, "EnviromentData.xlsx");
+          XLSX.utils.book_append_sheet(wb, ws, "WeatherForecastData");
+          XLSX.writeFile(wb, "WeatherForecastData.xlsx");
         });
     </script>
   </body>
